@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Share Admin Portal</h2>
+<form method="POST">
+    <label>Share Name:</label>
+    <input type="text" name="share_name"><br><br>
+
+    <label>Assign Permissions:</label>
+    <select name="permissions">
+        <option value="read">Read</option>
+        <option value="write">Write</option>
+        <option value="full">Full Control</option>
+    </select><br><br>
+
+    <label>File Path to Share:</label>
+    <input type="text" name="file_path"><br><br>
+
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}

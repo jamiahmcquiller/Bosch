@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>User Portal</h2>
+<form method="POST">
+    <label>Select File:</label>
+    <input type="text" name="file_path"><br><br>
+
+    <label>Desired Compression:</label>
+    <select name="compression">
+        <option value="zip">ZIP</option>
+        <option value="7z">7z</option>
+        <option value="lzma">LZMA</option>
+        <option value="zstd">Zstandard</option>
+    </select><br><br>
+
+    <label>Hash File?</label>
+    <input type="checkbox" name="hashing" value="yes"><br><br>
+
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>System Admin Portal</h2>
+<form method="POST">
+    <label>File Path:</label>
+    <input type="text" name="file_path"><br><br>
+
+    <label>Compression Tool:</label>
+    <select name="compression">
+        <option value="zip">ZIP</option>
+        <option value="7z">7z</option>
+        <option value="lzma">LZMA</option>
+        <option value="zstd">Zstandard</option>
+    </select><br><br>
+
+    <label>Hashing Algorithm:</label>
+    <select name="hashing">
+        <option value="sha256">SHA-256</option>
+        <option value="md5">MD5</option>
+        <option value="blake2b">BLAKE2b</option>
+    </select><br><br>
+
+    <label>Transfer Protocol:</label>
+    <select name="transfer">
+        <option value="cifs">CIFS/SMB</option>
+        <option value="nfs">NFS</option>
+    </select><br><br>
+
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}
