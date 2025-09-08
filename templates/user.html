@@ -1,21 +1,33 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>User Portal</h2>
-<form method="POST">
-    <label>Select File:</label>
-    <input type="text" name="file_path"><br><br>
+<main>
+    <h2>User Dashboard</h2>
 
-    <label>Desired Compression:</label>
-    <select name="compression">
-        <option value="zip">ZIP</option>
-        <option value="7z">7z</option>
-        <option value="lzma">LZMA</option>
-        <option value="zstd">Zstandard</option>
-    </select><br><br>
+    <!-- Accessible Shares -->
+    <section>
+        <h3>Your Shares</h3>
+        <ul>
+            <li>Share 1 - Project XYZ</li>
+            <li>Share 2 - Project ABC</li>
+        </ul>
+    </section>
 
-    <label>Hash File?</label>
-    <input type="checkbox" name="hashing" value="yes"><br><br>
+    <!-- Query Historical Files -->
+    <section>
+        <h3>File Query</h3>
+        <form method="POST">
+            <label>Filename:</label>
+            <input type="text" name="filename" placeholder="Enter filename"><br>
+            <button type="submit">Search</button>
+        </form>
+    </section>
 
-    <button type="submit">Submit</button>
-</form>
+    <!-- Restore / Download -->
+    <section>
+        <h3>File Actions</h3>
+        <button>Restore Selected File</button>
+        <button>Download Selected File</button>
+    </section>
+</main>
 {% endblock %}

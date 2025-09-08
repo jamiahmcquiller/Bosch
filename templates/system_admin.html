@@ -1,31 +1,40 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>System Admin Portal</h2>
-<form method="POST">
-    <label>File Path:</label>
-    <input type="text" name="file_path"><br><br>
+<main>
+    <h2>System Admin Panel</h2>
 
-    <label>Compression Tool:</label>
-    <select name="compression">
-        <option value="zip">ZIP</option>
-        <option value="7z">7z</option>
-        <option value="lzma">LZMA</option>
-        <option value="zstd">Zstandard</option>
-    </select><br><br>
+    <!-- Logs Viewer -->
+    <section>
+        <h3>System Logs</h3>
+        <table>
+            <thead>
+                <tr><th>Timestamp</th><th>User</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>2025-09-08 09:00</td><td>Admin1</td><td>Updated Config</td></tr>
+            </tbody>
+        </table>
+    </section>
 
-    <label>Hashing Algorithm:</label>
-    <select name="hashing">
-        <option value="sha256">SHA-256</option>
-        <option value="md5">MD5</option>
-        <option value="blake2b">BLAKE2b</option>
-    </select><br><br>
+    <!-- System Configuration -->
+    <section>
+        <h3>System Configuration</h3>
+        <form method="POST">
+            <label>Master Node:</label>
+            <input type="text" name="master_node" placeholder="Current Master"><br>
+            <label>Schedule Job:</label>
+            <input type="text" name="job_name" placeholder="Job Name"><br>
+            <label>Forced Update:</label>
+            <input type="checkbox" name="forced_update"> Apply<br>
+            <button type="submit">Save Changes</button>
+        </form>
+    </section>
 
-    <label>Transfer Protocol:</label>
-    <select name="transfer">
-        <option value="cifs">CIFS/SMB</option>
-        <option value="nfs">NFS</option>
-    </select><br><br>
-
-    <button type="submit">Submit</button>
-</form>
+    <!-- Reports / Analytics -->
+    <section>
+        <h3>Cost & Usage Reports</h3>
+        <p>Placeholder for graphs and charts showing historical usage, cost, and savings.</p>
+    </section>
+</main>
 {% endblock %}

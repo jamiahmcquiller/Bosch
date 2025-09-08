@@ -2,14 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Portal Home</title>
+    <title>Local Unstructured Data Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Welcome to the File Management System</h1>
-    <ul>
-        <li><a href="{{ url_for('system_admin') }}">System Admin Portal</a></li>
-        <li><a href="{{ url_for('share_admin') }}">Share Admin Portal</a></li>
-        <li><a href="{{ url_for('user') }}">User Portal</a></li>
-    </ul>
+    <header>
+        <h1>Bosch - Local Unstructured Data Management System</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('system_admin') }}">System Admin</a></li>
+                <li><a href="{{ url_for('share_admin') }}">Share Admin</a></li>
+                <li><a href="{{ url_for('user') }}">User</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    {% block content %}
+    <main>
+        <h2>Welcome to the Data Management System</h2>
+        <p>Select a portal above to start.</p>
+    </main>
+    {% endblock %}
+
+    <footer>
+        <p>© 2025 Bosch</p>
+    </footer>
 </body>
 </html>
