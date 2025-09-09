@@ -1,34 +1,56 @@
 {% extends "base.html" %}
-
 {% block content %}
-<main>
-    <h2>Share Admin Panel</h2>
+<h1>Shared Files Dashboard</h1>
 
-    <!-- Upload Requirement Documents -->
-    <section>
-        <h3>Upload Requirements</h3>
-        <form method="POST" enctype="multipart/form-data">
-            <input type="file" name="requirement_docs" multiple><br>
-            <button type="submit">Upload</button>
-        </form>
-    </section>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Filename</th>
+            <th>Status</th>
+            <th>Uploaded At</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for file in files %}
+        <tr>
+            <td>{{ file.id }}</td>
+            <td>{{ file.filename }}</td>
+            <td>{{ file.status }}</td>
+            <td>{{ file.uploaded_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-    <!-- Structured Inputs -->
-    <section>
-        <h3>Share Configuration</h3>
-        <form method="POST">
-            <label>Compression Allowance (%):</label>
-            <input type="number" name="compression" placeholder="e.g., 50"><br>
-            <label>Retention Period (days):</label>
-            <input type="number" name="retention" placeholder="e.g., 365"><br>
-            <label>Cost Elements:</label>
-            <input type="text" name="cost" placeholder="Cost info"><br>
-            <label>Ingress Forecast (GB):</label>
-            <input type="number" name="ingress"><br>
-            <label>Egress Forecast (GB):</label>
-            <input type="number" name="egress"><br>
-            <button type="submit">Save</button>
-        </form>
-    </section>
-</main>
+<canvas id="fileChart" width="400" height="200"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('fileChart').getContext('2d');
+
+    const fileChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: {{ chart_labels|default([])|tojson }},
+            datasets: [{
+                label: 'File Status',
+                data: {{ chart_data|default([])|tojson }},
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(255, 206, 86, 0.5)',
+                    'rgba(255, 99, 132, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+</script>
 {% endblock %}

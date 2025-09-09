@@ -1,71 +1,71 @@
-from flask import Flask, render_template, request, redirect, url_for
-import os
+from flask import Flask, render_template
+from datetime import datetime
+from models import db, SystemLog, SharedFile
 
 app = Flask(__name__)
 
-# Folder to temporarily store uploaded files
-UPLOAD_FOLDER = 'uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# Database configuration
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///bosch.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db.init_app(app)
 
-@app.route('/')
+
+# ---------- ROUTES ----------
+@app.route("/")
 def home():
-    return render_template('base.html')
+    return render_template("home.html", datetime=datetime)
 
-# ------------------- System Admin -------------------
-@app.route('/system_admin', methods=['GET', 'POST'])
+
+@app.route("/system_admin")
 def system_admin():
-    if request.method == 'POST':
-        # Handle form submission
-        master_node = request.form.get('master_node')
-        job_name = request.form.get('job_name')
-        forced_update = request.form.get('forced_update') == 'on'
-        
-        print("System Admin Form Submitted:")
-        print(f"Master Node: {master_node}")
-        print(f"Job Name: {job_name}")
-        print(f"Forced Update: {forced_update}")
-        
-        return redirect(url_for('system_admin'))
-    
-    return render_template('system_admin.html')
+    # Example logs – replace with db queries later
+    logs = [
+        {"id": 1, "message": "System started", "status": "OK", "timestamp": datetime.utcnow()},
+        {"id": 2, "message": "Backup completed", "status": "OK", "timestamp": datetime.utcnow()},
+        {"id": 3, "message": "Disk space low", "status": "Warning", "timestamp": datetime.utcnow()},
+    ]
 
-# ------------------- Share Admin -------------------
-@app.route('/share_admin', methods=['GET', 'POST'])
+    # Example chart data
+    chart_labels = ["OK", "Warning", "Error"]  # categories for chart
+    chart_data = [2, 1, 0]  # counts matching above categories
+
+    return render_template(
+        "system_admin.html",
+        logs=logs,
+        chart_labels=chart_labels,
+        chart_data=chart_data,
+        datetime=datetime
+    )
+
+
+@app.route("/share_admin")
 def share_admin():
-    if request.method == 'POST':
-        # Handle structured inputs
-        compression = request.form.get('compression')
-        retention = request.form.get('retention')
-        cost = request.form.get('cost')
-        ingress = request.form.get('ingress')
-        egress = request.form.get('egress')
-        
-        # Handle file uploads
-        uploaded_files = request.files.getlist('requirement_docs')
-        for file in uploaded_files:
-            if file.filename != '':
-                filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-                file.save(filepath)
-                print(f"Uploaded file saved to: {filepath}")
-        
-        print("Share Admin Form Submitted:")
-        print(f"Compression: {compression}, Retention: {retention}, Cost: {cost}, Ingress: {ingress}, Egress: {egress}")
-        
-        return redirect(url_for('share_admin'))
-    
-    return render_template('share_admin.html')
+    # Example files – replace with db queries later
+    files = [
+        {"id": 1, "filename": "report1.csv", "status": "Shared", "uploaded_at": datetime.utcnow()},
+        {"id": 2, "filename": "data_backup.zip", "status": "Pending", "uploaded_at": datetime.utcnow()},
+    ]
 
-# ------------------- User -------------------
-@app.route('/user', methods=['GET', 'POST'])
+    # Prepare chart data
+    chart_labels = [f["filename"] for f in files] if files else []
+    chart_data = [1 for _ in files] if files else []  # Use 1 as a placeholder
+
+    return render_template(
+        "share_admin.html",
+        files=files,
+        chart_labels=chart_labels,
+        chart_data=chart_data,
+        datetime=datetime,
+    )
+
+
+@app.route("/user")
 def user():
-    if request.method == 'POST':
-        filename = request.form.get('filename')
-        print(f"User searched for file: {filename}")
-        return redirect(url_for('user'))
-    
-    return render_template('user.html')
+    return render_template("user.html", datetime=datetime)
 
-# ------------------- Run Flask -------------------
-if __name__ == '__main__':
+
+# ---------- MAIN ----------
+if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()  # Ensure DB tables exist
     app.run(debug=True)

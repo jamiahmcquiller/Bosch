@@ -2,30 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Local Unstructured Data Management System</title>
+    <title>Bosch Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <header>
-        <h1>Bosch - Local Unstructured Data Management System</h1>
+        <h1>Bosch Dashboard</h1>
         <nav>
-            <ul>
-                <li><a href="{{ url_for('system_admin') }}">System Admin</a></li>
-                <li><a href="{{ url_for('share_admin') }}">Share Admin</a></li>
-                <li><a href="{{ url_for('user') }}">User</a></li>
-            </ul>
-        </nav>
+    <ul style="list-style: none; padding: 0; margin: 0; display: flex; gap: 15px;">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('system_admin') }}">System Admin</a></li>
+        <li><a href="{{ url_for('share_admin') }}">Share Admin</a></li>
+        <li><a href="{{ url_for('user') }}">User</a></li>
+    </ul>
+</nav>
+
     </header>
 
-    {% block content %}
     <main>
-        <h2>Welcome to the Data Management System</h2>
-        <p>Select a portal above to start.</p>
+        {% block content %}{% endblock %}
     </main>
-    {% endblock %}
 
     <footer>
-        <p>© 2025 Bosch</p>
+        <p>&copy; {{ datetime.utcnow().year if datetime else 2025 }} Bosch</p>
     </footer>
 </body>
 </html>

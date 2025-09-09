@@ -1,40 +1,53 @@
 {% extends "base.html" %}
-
 {% block content %}
-<main>
-    <h2>System Admin Panel</h2>
+<h1>System Admin Dashboard</h1>
 
-    <!-- Logs Viewer -->
-    <section>
-        <h3>System Logs</h3>
-        <table>
-            <thead>
-                <tr><th>Timestamp</th><th>User</th><th>Action</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>2025-09-08 09:00</td><td>Admin1</td><td>Updated Config</td></tr>
-            </tbody>
-        </table>
-    </section>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Message</th>
+            <th>Status</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in logs %}
+        <tr>
+            <td>{{ log.id }}</td>
+            <td>{{ log.message }}</td>
+            <td>{{ log.status }}</td>
+            <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-    <!-- System Configuration -->
-    <section>
-        <h3>System Configuration</h3>
-        <form method="POST">
-            <label>Master Node:</label>
-            <input type="text" name="master_node" placeholder="Current Master"><br>
-            <label>Schedule Job:</label>
-            <input type="text" name="job_name" placeholder="Job Name"><br>
-            <label>Forced Update:</label>
-            <input type="checkbox" name="forced_update"> Apply<br>
-            <button type="submit">Save Changes</button>
-        </form>
-    </section>
+<canvas id="logChart" width="400" height="200"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('logChart').getContext('2d');
 
-    <!-- Reports / Analytics -->
-    <section>
-        <h3>Cost & Usage Reports</h3>
-        <p>Placeholder for graphs and charts showing historical usage, cost, and savings.</p>
-    </section>
-</main>
+    const logChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_labels|default([])|tojson }},
+            datasets: [{
+                label: 'Log Counts',
+                data: {{ chart_data|default([])|tojson }},
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}
