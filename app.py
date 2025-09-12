@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from datetime import datetime
 from models import db, SystemLog, SharedFile
+from utils import compress_file
 
 app = Flask(__name__)
 
@@ -8,6 +9,11 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///bosch.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
+
+def compress_file(input_path, output_path, level=3):
+    cctx = zstd.ZstdCompressor(level=level)
+    with open(input_path, "rb") as fin, open(output_path, "wb") as fout:
+        fout.write(cctx.compress(fin.read()))
 
 
 # ---------- ROUTES ----------
