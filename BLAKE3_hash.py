@@ -5,7 +5,7 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 #Directory being watched, paste directory here
-HASH_DIR = "/User/path"
+HASH_DIR = "/Users/file"
 
 
 #Break down file into chunks, read in binary, and converto to hexidecimal hash
@@ -15,6 +15,22 @@ def hash_file(path):
         for chunk in iter(lambda: f.read(8192), b""):
             hasher.update(chunk)
     return hasher.hexdigest()
+
+#Rename file in directory to BLAKE3 Hash
+def rename_file(path, file_hash):
+    try:
+        file_ext = path.suffix
+        rename = f"{file_hash}{file_ext}"
+        new_path = path.parent / rename
+
+        if new_path.exists():
+            return new_path
+
+        path.rename(new_path)
+        return new_path
+    except Exception as e:
+        print(f"There was an error renaming {path.name}: {e}")
+        return path
 
 
 #create an observer class to see if the directory is updated
@@ -26,6 +42,7 @@ class obsFile(FileSystemEventHandler):
             try:
                 file_hash = hash_file(path)
                 print(f"     BLAKE3 Hash: {file_hash}\n")
+                rename_file(path, file_hash)
             except Exception as e:
                 print(f" ERROR, {path.name} not hashed: {e}")
 
