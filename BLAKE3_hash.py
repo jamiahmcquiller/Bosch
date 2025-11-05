@@ -73,7 +73,7 @@ class obsFile(FileSystemEventHandler):
 
                 #reapply original timestamps for original file metadata
                 try:
-                    os.utime(new_path, (modified, modified))
+                    os.utime(new_path, (modified.timestamp(), modified.timestamp()))
                 except Exception as e:
                     print(f"Error, timestamps for {new_path.name} not restored: {e} ")
                 
