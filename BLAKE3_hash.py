@@ -1,15 +1,20 @@
 from blake3 import blake3
 import time
-import json
 import os
 import datetime
 from pathlib import Path
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+#import apacheparquet libraries
+from fastparquet import ParquetFile, write
+import pandas as pd
+
+
 #Directory being watched, paste directory here
-HASH_DIR = "/Users/(user)/(path)"
-META_DIR = Path("/Users/(user)/(path)")
+HASH_DIR = "(path)"
+META_DIR = Path("(path)")
+
 
 #Break down file into chunks, read in binary, and converto to hexidecimal hash
 def hash_file(path):
@@ -76,8 +81,7 @@ class obsFile(FileSystemEventHandler):
                     os.utime(new_path, (modified.timestamp(), modified.timestamp()))
                 except Exception as e:
                     print(f"Error, timestamps for {new_path.name} not restored: {e} ")
-                
-
+    
 
                 #Format metadata for file
                 metadata = {
@@ -93,18 +97,23 @@ class obsFile(FileSystemEventHandler):
 
                 #Verify metadata directory
                 META_DIR.mkdir(parents=True, exist_ok=True)
+
+                meta_master = "MData/master_metadata.parq"
+
+                #convert dictionary into dataframe
+                metadata_df = pd.DataFrame([metadata])
                 
+                #Verify master file's existence, establish new master file if not already in metadata directory
+                if os.path.exists(meta_master):
+                    pf = ParquetFile(meta_master)
+                    existing = pf.to_pandas()
+                    new_df = pd.concat([existing, metadata_df], ignore_index=True)
+                else:
+                    new_df = metadata_df
 
-                #create a new JSON file that metadata is stored in 
-                meta_filename = f"{file_hash}.json"
-                meta_path = META_DIR / meta_filename
+                write(str(meta_master), new_df, compression='GZIP', file_scheme='simple')
 
-                #save file
-
-                with open(meta_path, "w") as meta_file:
-                    json.dump(metadata, meta_file, indent=5)
-
-                print(f"[+] New metadata file written to {meta_path.name}")
+                print(f"[+] New metadata entry written to {meta_master}")
 
 
             except Exception as e:
@@ -133,8 +142,3 @@ except KeyboardInterrupt:
     print("\nStopping...")
     observer.stop()
 observer.join()
-
-
-
-
-
